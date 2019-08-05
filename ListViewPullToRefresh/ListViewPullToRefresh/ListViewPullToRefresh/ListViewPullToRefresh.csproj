@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\BlogAuthor.png" />
+    <None Remove="Images\BlogCategory.png" />
+    <None Remove="Images\Blog_Facebook.png" />
+    <None Remove="Images\Blog_Google Plus.png" />
+    <None Remove="Images\Blog_LinkedIn.png" />
+    <None Remove="Images\Blog_Twitter.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images\BlogAuthor.png" />
+    <EmbeddedResource Include="Images\BlogCategory.png" />
+    <EmbeddedResource Include="Images\Blog_Facebook.png" />
+    <EmbeddedResource Include="Images\Blog_Google Plus.png" />
+    <EmbeddedResource Include="Images\Blog_LinkedIn.png" />
+    <EmbeddedResource Include="Images\Blog_Twitter.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="17.1.0.53" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPullToRefresh" Version="17.2.0.34" />
+    <PackageReference Include="Xamarin.Forms" Version="4.1.0.581479" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ListViewPullToRefreshPage.xaml.cs">
+      <DependentUpon>ListViewPullToRefreshPage.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+</Project>
