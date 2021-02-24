@@ -153,12 +153,12 @@ namespace ListViewSample
                     BlogTitle = BlogsTitle[blogsTitleCount - i],
                     BlogCategory = BlogsCategory[blogsCategoryCount - i],
                     BlogAuthor = BlogsAuthers[blogsAuthorCount - i],
-                    BlogAuthorIcon = ImageSource.FromResource("ListViewSample.Images.BlogAuthor.png"),
-                    BlogCategoryIcon = ImageSource.FromResource("ListViewSample.Images.BlogCategory.png"),
-                    BlogFacebookIcon = ImageSource.FromResource("ListViewSample.Images.Blog_Facebook.png"),
-                    BlogTwitterIcon = ImageSource.FromResource("ListViewSample.Images.Blog_Twitter.png"),
-                    BlogGooglePlusIcon = ImageSource.FromResource("ListViewSample.Images.Blog_Google Plus.png"),
-                    BlogLinkedInIcon = ImageSource.FromResource("ListViewSample.Images.Blog_LinkedIn.png"),
+                    BlogAuthorIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogAuthor.png"),
+                    BlogCategoryIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogCategory.png"),
+                    BlogFacebookIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Facebook.png"),
+                    BlogTwitterIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Twitter.png"),
+                    BlogGooglePlusIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Google Plus.png"),
+                    BlogLinkedInIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_LinkedIn.png"),
                     ReadMoreContent = BlogsReadMoreInfo[blogsReadMoreCount - i],
                 };
                 blogsInfo.Insert(0, blog);

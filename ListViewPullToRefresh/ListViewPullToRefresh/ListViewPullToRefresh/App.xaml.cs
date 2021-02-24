@@ -12,7 +12,7 @@ namespace ListViewPullToRefresh
         {
             InitializeComponent();
 
-            MainPage = new ListViewPullToRefreshPage();
+            MainPage = new NavigationPage(new ListViewPullToRefreshPage());
         }
 
         protected override void OnStart()
