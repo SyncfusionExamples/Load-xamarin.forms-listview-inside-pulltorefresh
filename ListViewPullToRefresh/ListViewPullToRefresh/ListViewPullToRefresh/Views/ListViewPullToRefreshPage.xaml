@@ -6,9 +6,14 @@
              xmlns:pulltoRefresh="clr-namespace:Syncfusion.SfPullToRefresh.XForms;assembly=Syncfusion.SfPullToRefresh.XForms"
              xmlns:syncfusion="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms">
 
+    <ContentPage.BindingContext>
+        <local:ListViewPullToRefreshViewModel/>
+    </ContentPage.BindingContext>
+    
     <ContentPage.Behaviors>
         <local:SfListViewPullToRefreshBehavior />
     </ContentPage.Behaviors>
+    
     <ContentPage.Content>
         <Grid RowSpacing="0" ColumnSpacing="0" Padding="0" Margin="0">
             <Grid.RowDefinitions>
@@ -21,7 +26,8 @@
                                            PullingThreshold="150"
                                            RefreshContentWidth="50"
                                            TransitionMode="Push"
-                                           IsRefreshing="False">
+                                           RefreshCommand="{Binding RefreshCommand}"
+                                           IsRefreshing="{Binding IsRefreshing}">
                 <pulltoRefresh:SfPullToRefresh.ProgressStrokeWidth>
                     <OnPlatform x:TypeArguments="x:Double">
                         <OnPlatform.WinPhone>2</OnPlatform.WinPhone>
@@ -31,7 +37,8 @@
                 </pulltoRefresh:SfPullToRefresh.ProgressStrokeWidth>
                 <pulltoRefresh:SfPullToRefresh.PullableContent>
                     <syncfusion:SfListView x:Name="listView" ItemSize="120" 
-                                   AutoFitMode="Height" SelectionMode="None">
+                                           AutoFitMode="Height" SelectionMode="None"
+                                           ItemsSource="{Binding BlogsInfo}">
 
                         <syncfusion:SfListView.ItemTemplate>
                             <DataTemplate>

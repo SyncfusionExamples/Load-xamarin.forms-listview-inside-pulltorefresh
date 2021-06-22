@@ -149,10 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Syncfusion.Xamarin.SfListView">
-      <Version>18.4.0.44</Version>
+      <Version>19.1.0.69</Version>
     </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfPullToRefresh">
-      <Version>18.4.0.44</Version>
+      <Version>19.1.0.69</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.5.0.617" />
   </ItemGroup>

@@ -7,20 +7,16 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Syncfusion.ListView.XForms;
+using ListViewPullToRefresh;
 
 namespace ListViewSample
 {
-    public class ListViewPullToRefreshViewModel
+    public class ListViewPullToRefreshViewModel : INotifyPropertyChanged
     {
         #region Fields
 
         private ObservableCollection<ListViewBlogsInfo> blogsInfo;
-        private Command<object> readMoreCommand;
-        private Command<object> twitterCommand;
-        private Command<object> linkedInCommand;
-        private Command<object> facebookCommand;
-        private Command<object> googlePlusCommand;
-
+        private bool isRefreshing;
         #endregion
 
         #region Constructor
@@ -28,11 +24,12 @@ namespace ListViewSample
         public ListViewPullToRefreshViewModel()
         {
             GenerateSource();
-            readMoreCommand = new Command<object>(NavigateToReadMoreContent);
-            twitterCommand = new Command<object>(NavigateTwitterLink);
-            linkedInCommand = new Command<object>(NavigateLinkedInLink);
-            facebookCommand = new Command<object>(NavigateFacebookLink);
-            googlePlusCommand = new Command<object>(NavigateGooglePlusLink);
+            RefreshCommand = new Command<object>(PullToRefresh_Refreshing);
+            ReadMoreCommand = new Command<object>(NavigateToReadMoreContent);
+            TwitterCommand = new Command<object>(NavigateTwitterLink);
+            LinkedInCommand = new Command<object>(NavigateLinkedInLink);
+            FacebookCommand = new Command<object>(NavigateFacebookLink);
+            GooglePlusCommand = new Command<object>(NavigateGooglePlusLink);
         }
 
         #endregion
@@ -45,51 +42,65 @@ namespace ListViewSample
             set { this.blogsInfo = value; }
         }
 
-        public Command<object> ReadMoreCommand
+        public bool IsRefreshing
         {
-            get { return readMoreCommand; }
-            set { readMoreCommand = value; }
+            get { return isRefreshing; }
+            set { isRefreshing = value; this.OnPropertyChanged("IsRefreshing"); }
         }
 
-        public Command<object> TwitterCommand
-        {
-            get { return twitterCommand; }
-            set { twitterCommand = value; }
-        }
-
-        public Command<object> LinkedInCommand
-        {
-            get { return linkedInCommand; }
-            set { linkedInCommand = value; }
-        }
-
-        public Command<object> FacebookCommand
-        {
-            get { return facebookCommand; }
-            set { facebookCommand = value; }
-        }
-
-        public Command<object> GooglePlusCommand
-        {
-            get { return googlePlusCommand; }
-            set { googlePlusCommand = value; }
-        }
-
-        internal INavigation Navigation
-        {
-            get;
-            set;
-        }
+        public Command<object> ReadMoreCommand { get; set; }
+        public Command<object> TwitterCommand { get; set; }
+        public Command<object> LinkedInCommand { get; set; }
+        public Command<object> FacebookCommand { get; set; }
+        public Command<object> GooglePlusCommand { get; set; }
+        public Command<object> RefreshCommand { get; set; }
 
         #endregion
 
         #region Private Methods
 
+        private async void PullToRefresh_Refreshing(object obj)
+        {
+            this.IsRefreshing = true;
+            await Task.Delay(2000);
+            var blogsTitleCount = this.BlogsTitle.Count() - 1;
+
+            if ((this.BlogsInfo.Count - 1) == blogsTitleCount)
+            {
+                this.IsRefreshing = false;
+                return;
+            }
+
+            var blogsCategoryCount = this.BlogsCategory.Count() - 1;
+            var blogsAuthorCount = this.BlogsAuthers.Count() - 1;
+            var blogsReadMoreCount = this.BlogsReadMoreInfo.Count() - 1;
+
+            for (int i = 0; i < 3; i++)
+            {
+                var blogsCount = this.BlogsInfo.Count;
+                var item = new ListViewBlogsInfo()
+                {
+                    BlogTitle = this.BlogsTitle[blogsTitleCount - blogsCount],
+                    BlogAuthor = this.BlogsAuthers[blogsAuthorCount - blogsCount],
+                    BlogCategory = this.BlogsCategory[blogsCategoryCount - blogsCount],
+                    ReadMoreContent = this.BlogsReadMoreInfo[blogsReadMoreCount - blogsCount],
+                    BlogAuthorIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogAuthor.png"),
+                    BlogCategoryIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogCategory.png"),
+                    BlogFacebookIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Facebook.png"),
+                    BlogTwitterIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Twitter.png"),
+                    BlogGooglePlusIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Google Plus.png"),
+                    BlogLinkedInIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_LinkedIn.png"),
+                };
+                this.BlogsInfo.Insert(0, item);
+            }
+            this.IsRefreshing = false;
+        }
+
         private void NavigateToReadMoreContent(object obj)
         {
             var readMoreContentPage = new ReadMoreContentPage();
             readMoreContentPage.BindingContext = obj;
-            Navigation.PushAsync(readMoreContentPage);
+            App.Current.MainPage.Navigation.PushAsync(readMoreContentPage);
         }
 
         private void NavigateTwitterLink(object obj)
@@ -262,7 +273,19 @@ namespace ListViewSample
            "Syncfusion would like to thank all attendees of last week’s webinar, “Fall Madly in Love with These 10 Xamarin Charts!” for participating as Syncfusion Product Manager Chad Church showed off some of our coolest charts. Here’s the webinar if you missed it.\n\nAs promised, here is a summary of the Q&A portion from the end of the webinar, plus answers to questions we couldn’t get to then:\n\nDoes the chart work inside a ScrollView?\nYes.\n\nWhat about MVVM support? I use Prism and a kind of pure MVVM model. Is it easy to integrate the charts in that model?\nYes. There’s complete MVVM support. Prism and other packages should all work well.",
            "(This guest blog was written by Wolfgang Loder, February 2017.)\n\nWhenever web developers are asked about a language or framework they want to try, most likely the language Elm will be mentioned.\n\nThis is not an Elm primer, so I assume you have a little experience with the Elm basics. If not, the following paragraphs will give you an idea what can be achieved with the Elm platform.\n\nAs much as Elm libraries try to cover everything needed for web applications development, there are gaps and inadequate solutions. This is why pure Elm applications may be good for demos and simple applications, but are not always feasible for production code. We will often have to enhance Elm code with JavaScript libraries.",
         };
-        
+
+        #endregion
+
+        #region Interface Member
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void OnPropertyChanged(string name)
+        {
+            if (this.PropertyChanged != null)
+                this.PropertyChanged(this, new PropertyChangedEventArgs(name));
+        }
+
         #endregion
     }
 }
