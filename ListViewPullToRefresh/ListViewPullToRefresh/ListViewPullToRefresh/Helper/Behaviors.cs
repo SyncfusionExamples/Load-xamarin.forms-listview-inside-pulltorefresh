@@ -17,8 +17,6 @@ namespace ListViewSample
     {
         #region Fields
 
-        private ListViewPullToRefreshViewModel pulltoRefreshViewModel;
-        private SfListView ListView;
         private SfPullToRefresh pullToRefresh = null;
         private Picker picker;
 
@@ -28,19 +26,7 @@ namespace ListViewSample
 
         protected override void OnAttachedTo(ContentPage bindable)
         {
-
-            
             pullToRefresh = bindable.FindByName<SfPullToRefresh>("pullToRefresh");
-            ListView = bindable.FindByName<SfListView>("listView");
-
-            pulltoRefreshViewModel = new ListViewPullToRefreshViewModel();
-            pulltoRefreshViewModel.Navigation = bindable.Navigation;
-
-            ListView.BindingContext = pulltoRefreshViewModel;
-            ListView.ItemsSource = pulltoRefreshViewModel.BlogsInfo;
-            
-            pullToRefresh.Refreshing += PullToRefresh_Refreshing;
-
             picker = bindable.FindByName<Picker>("transitionTypePicker");
             picker.Items.Add("SlideOnTop");
             picker.Items.Add("Push");
@@ -51,8 +37,9 @@ namespace ListViewSample
 
         protected override void OnDetachingFrom(ContentPage bindable)
         {
-            pullToRefresh.Refreshing -= PullToRefresh_Refreshing;
             picker.SelectedIndexChanged -= Picker_SelectedIndexChanged;
+            pullToRefresh = null;
+            picker = null;
             base.OnDetachingFrom(bindable);
         }
 
@@ -68,46 +55,6 @@ namespace ListViewSample
                 pullToRefresh.RefreshContentThreshold = 50;
                 pullToRefresh.TransitionMode = TransitionType.Push;
             }
-        }
-
-        #endregion
-
-        #region Private Methods
-        private async void PullToRefresh_Refreshing(object sender, EventArgs args)
-        {
-            pullToRefresh.IsRefreshing = true;
-            await Task.Delay(2000);
-            var blogsTitleCount = pulltoRefreshViewModel.BlogsTitle.Count() - 1;
-
-            if ((pulltoRefreshViewModel.BlogsInfo.Count - 1) == blogsTitleCount)
-            {
-                pullToRefresh.IsRefreshing = false;
-                return;
-            }
-
-            var blogsCategoryCount = pulltoRefreshViewModel.BlogsCategory.Count() - 1;
-            var blogsAuthorCount = pulltoRefreshViewModel.BlogsAuthers.Count() - 1;
-            var blogsReadMoreCount = pulltoRefreshViewModel.BlogsReadMoreInfo.Count() - 1;
-
-            for (int i = 0; i < 3; i++)
-            {
-                var blogsCount = pulltoRefreshViewModel.BlogsInfo.Count;
-                var item = new ListViewBlogsInfo()
-                {
-                    BlogTitle = pulltoRefreshViewModel.BlogsTitle[blogsTitleCount - blogsCount],
-                    BlogAuthor = pulltoRefreshViewModel.BlogsAuthers[blogsAuthorCount - blogsCount],
-                    BlogCategory = pulltoRefreshViewModel.BlogsCategory[blogsCategoryCount - blogsCount],
-                    ReadMoreContent = pulltoRefreshViewModel.BlogsReadMoreInfo[blogsReadMoreCount - blogsCount],
-                    BlogAuthorIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogAuthor.png"),
-                    BlogCategoryIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.BlogCategory.png"),
-                    BlogFacebookIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Facebook.png"),
-                    BlogTwitterIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Twitter.png"),
-                    BlogGooglePlusIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_Google Plus.png"),
-                    BlogLinkedInIcon = ImageSource.FromResource("ListViewPullToRefresh.Images.Blog_LinkedIn.png"),
-                };
-                pulltoRefreshViewModel.BlogsInfo.Insert(0, item);
-            }
-            pullToRefresh.IsRefreshing = false;
         }
 
         #endregion
